@@ -5,10 +5,12 @@ resource "aws_iam_openid_connect_provider" "github" {
 
   client_id_list = ["sts.amazonaws.com"]
 
-  thumbprint_list = distinct([
-    data.tls_certificate.github.certificates[0].sha1_fingerprint,
-    data.tls_certificate.github.certificates[length(data.tls_certificate.github.certificates) - 1].sha1_fingerprint,
-  ])
+  # GitHub's published CA thumbprints. The TLS handshake chain is not a
+  # reliable source and wrong values reject AssumeRoleWithWebIdentity.
+  thumbprint_list = [
+    "6938fd4d98bab03faadb97b34396831e3780aea1",
+    "1c58a3a8518e8759bf075b76b750d4f2df264fcd",
+  ]
 }
 
 data "aws_iam_policy_document" "github_oidc_assume" {

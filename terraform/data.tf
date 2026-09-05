@@ -6,10 +6,6 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-data "tls_certificate" "github" {
-  url = "https://token.actions.githubusercontent.com"
-}
-
 data "aws_kms_alias" "tf_state" {
   name = "alias/finzla-terraform-state"
 }
