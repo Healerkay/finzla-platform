@@ -1,0 +1,16 @@
+environment                 = "dev"
+aws_region                  = "eu-west-1"
+vpc_cidr                    = "10.40.0.0/16"
+enable_nat_gateway          = false
+enable_https                = false
+acm_certificate_arn         = ""
+app_env                     = "development"
+desired_count               = 1
+task_cpu                    = 256
+task_memory                 = 512
+log_retention_days          = 14
+github_org                  = "Healerkay"
+github_repo                 = "finzla-platform"
+github_deploy_environment   = "development"
+create_github_oidc_provider = true
+container_image             = "840432317209.dkr.ecr.eu-west-1.amazonaws.com/finzla-dev-api:dev-20260905220757"

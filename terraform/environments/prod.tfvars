@@ -1,0 +1,16 @@
+environment                 = "prod"
+aws_region                  = "eu-west-1"
+vpc_cidr                    = "10.50.0.0/16"
+enable_nat_gateway          = false
+enable_https                = true
+acm_certificate_arn         = "arn:aws:acm:eu-west-1:REPLACE_ACCOUNT_ID:certificate/REPLACE"
+app_env                     = "production"
+desired_count               = 2
+task_cpu                    = 512
+task_memory                 = 1024
+log_retention_days          = 90
+github_org                  = "Healerkay"
+github_repo                 = "finzla-platform"
+github_deploy_environment   = "production"
+create_github_oidc_provider = true
+allowed_ingress_cidrs       = ["0.0.0.0/0"]

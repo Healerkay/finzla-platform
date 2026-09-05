@@ -15,6 +15,6 @@ def health():
 @app.get("/version")
 def version():
     return {
-        "version": "1.0.0",
+        "version": os.getenv("APP_VERSION", "1.0.0"),
         "environment": APP_ENV,
     }

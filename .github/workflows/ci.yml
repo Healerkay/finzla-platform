@@ -1,0 +1,80 @@
+name: Pull request validation
+
+on:
+  pull_request:
+    branches: [master, main]
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: eu-west-1
+  TF_VAR_FILE: environments/dev.tfvars
+
+jobs:
+  application:
+    name: Application build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: pytest -q
+
+  quality:
+    name: Security and quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+
+  terraform:
+    name: Terraform fmt, validate, plan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+      - name: terraform fmt
+        run: terraform fmt -check -recursive
+      - name: terraform init
+        run: terraform init -input=false -backend-config=backend.dev.hcl
+      - name: terraform validate
+        run: terraform validate
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::840432317209:role/finzla-dev-github-plan
+          aws-region: ${{ env.AWS_REGION }}
+      - name: terraform plan
+        run: terraform plan -input=false -no-color -var-file="${{ env.TF_VAR_FILE }}" -out=tfplan
+      - name: Upload plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-dev
+          path: terraform/tfplan

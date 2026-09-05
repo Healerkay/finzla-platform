@@ -4,3 +4,17 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform/environments/*.tfvars
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+tfplan
+tfplan.json
