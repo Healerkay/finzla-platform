@@ -52,6 +52,9 @@ jobs:
   terraform:
     name: Terraform fmt, validate, plan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     defaults:
       run:
         working-directory: terraform

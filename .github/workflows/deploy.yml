@@ -35,6 +35,9 @@ jobs:
     name: Build and push image
     if: ${{ (github.event_name == 'push') || (github.event.inputs.environment == 'development') }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     outputs:
       image: ${{ steps.meta.outputs.image }}
     steps:
@@ -69,6 +72,9 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     environment: development
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Configure AWS credentials (OIDC)

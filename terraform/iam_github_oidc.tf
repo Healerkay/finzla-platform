@@ -15,8 +15,11 @@ resource "aws_iam_openid_connect_provider" "github" {
 
 data "aws_iam_policy_document" "github_oidc_assume" {
   statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRoleWithWebIdentity",
+      "sts:TagSession",
+    ]
 
     principals {
       type        = "Federated"
@@ -32,7 +35,10 @@ data "aws_iam_policy_document" "github_oidc_assume" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_org}/${var.github_repo}:*"]
+      values = [
+        "repo:${var.github_org}/${var.github_repo}:*",
+        "repo:${var.github_org}@*/${var.github_repo}@*:*",
+      ]
     }
   }
 }
@@ -88,8 +94,11 @@ resource "aws_iam_role_policy" "github_ci" {
 
 data "aws_iam_policy_document" "github_deploy_assume" {
   statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRoleWithWebIdentity",
+      "sts:TagSession",
+    ]
 
     principals {
       type        = "Federated"
@@ -103,10 +112,11 @@ data "aws_iam_policy_document" "github_deploy_assume" {
     }
 
     condition {
-      test     = "StringEquals"
+      test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
         "repo:${var.github_org}/${var.github_repo}:environment:${var.github_deploy_environment}",
+        "repo:${var.github_org}@*/${var.github_repo}@*:environment:${var.github_deploy_environment}",
       ]
     }
   }
