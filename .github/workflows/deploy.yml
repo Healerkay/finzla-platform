@@ -1,8 +1,6 @@
 name: Build, push, and deploy
 
 on:
-  push:
-    branches: [master, main]
   workflow_dispatch:
     inputs:
       environment:
@@ -33,7 +31,7 @@ env:
 jobs:
   build-and-push:
     name: Build and push image
-    if: ${{ (github.event_name == 'push') || (github.event.inputs.environment == 'development') }}
+    if: ${{ github.event.inputs.environment == 'development' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -69,6 +67,7 @@ jobs:
 
   deploy-development:
     name: Deploy development
+    if: ${{ github.event.inputs.environment == 'development' }}
     needs: build-and-push
     runs-on: ubuntu-latest
     environment: development
