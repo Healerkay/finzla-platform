@@ -2,14 +2,17 @@
 
 Personal repository for the Finzla Cloud & Platform Engineer assessment. The **README is the written submission**. Everything the brief asks to explain is in this file; there is no separate Word/PDF attachment.
 
-Live **dev** environment (eu-west-1, account `840432317209`):
+**The AWS demo was taken down after evidence was captured**, so Finzla is not waiting on a live URL and I am not leaving an ALB/Fargate/VPC-endpoint bill running. Recreate with Terraform in `terraform/` if a reviewer wants a live environment.
 
-- Health: http://finzla-dev-alb-1168961660.eu-west-1.elb.amazonaws.com/health
-- Version: http://finzla-dev-alb-1168961660.eu-west-1.elb.amazonaws.com/version
-- CloudWatch dashboard: `finzla-dev-api` (eu-west-1)
-- GitHub: https://github.com/Healerkay/finzla-platform
+Captured **dev** environment (eu-west-1, account `840432317209`):
 
-Dev serves **HTTP only**. HTTPS is wired in Terraform (`enable_https` + ACM ARN) and is intended for production.
+- Health (while live): `http://finzla-dev-alb-1168961660.eu-west-1.elb.amazonaws.com/health`
+- Version (while live): `http://finzla-dev-alb-1168961660.eu-west-1.elb.amazonaws.com/version`
+- CloudWatch dashboard (while live): `finzla-dev-api`
+- GitHub (still live): https://github.com/Healerkay/finzla-platform
+- Actions run (still live): https://github.com/Healerkay/finzla-platform/actions/runs/34061066470
+
+Use the screenshots below plus GitHub Actions history as proof the stack ran. Dev was **HTTP only**; HTTPS is in Terraform for production.
 
 ### Evidence screenshots
 
@@ -225,5 +228,5 @@ Manual deploy: GitHub **Actions → Build, push, and deploy → Run workflow**.
 | Terraform (VPC, subnets, routing, SGs, ECR, Fargate, ALB, IAM, logs, monitoring) | `terraform/*.tf` |
 | Container not public | Private subnets, `assign_public_ip = false`, SG from ALB only |
 | GitHub Actions PR + deploy + OIDC | `.github/workflows/` |
-| Docker build / plan / deploy / health | ECR tags; Terraform state in S3; ALB `/health` 200; Actions run history |
+| Docker build / plan / deploy / health | Screenshots in `docs/evidence/`; GitHub Actions run history; Terraform in this repo |
 | Diagram | Mermaid in this README |
